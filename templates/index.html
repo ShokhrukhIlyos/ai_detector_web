@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>AI Detector (Heuristic)</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 850px; margin: 30px auto; padding: 0 16px; }
+    .box { border: 1px solid #ddd; border-radius: 10px; padding: 18px; }
+    .btn { padding: 10px 16px; border: none; border-radius: 8px; cursor: pointer; }
+    .btn-primary { background: #2b6cb0; color: white; }
+    .err { color: #b00020; margin-top: 10px; }
+    .ok { margin-top: 14px; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .card { border: 1px solid #eee; border-radius: 10px; padding: 12px; min-width: 220px; }
+    .big { font-size: 28px; font-weight: bold; }
+    .muted { color: #666; }
+    input[type="file"]{ padding: 6px; }
+  </style>
+</head>
+<body>
+  <h2>AI Likelihood Detector (Heuristic)</h2>
+
+  <div class="box">
+    <form action="/analyze" method="post" enctype="multipart/form-data">
+      <p class="muted">Upload a PDF/DOCX/TXT file. You’ll get an estimated AI-likeness %. This is not proof.</p>
+      <input type="file" name="file" accept=".pdf,.docx,.txt" required />
+      <button class="btn btn-primary" type="submit">Analyze</button>
+    </form>
+
+    {% if error %}
+      <div class="err">⚠️ {{ error }}</div>
+    {% endif %}
+
+    {% if result %}
+      <div class="ok">
+        <p><b>File:</b> {{ result.filename }} <span class="muted">(chars: {{ result.chars }})</span></p>
+        <div class="row">
+          <div class="card">
+            <div class="muted">Estimated AI Likelihood</div>
+            <div class="big">{{ result.ai_percent }}%</div>
+          </div>
+          <div class="card"><b>Perplexity</b><br>{{ result.perplexity }}</div>
+          <div class="card"><b>Burstiness</b><br>{{ result.burstiness }}</div>
+          <div class="card"><b>Repetition</b><br>{{ result.repetition }}</div>
+          <div class="card"><b>Unique ratio</b><br>{{ result.unique_ratio }}</div>
+        </div>
+        <p class="muted" style="margin-top:12px;">⚠️ Reminder: heuristic estimate, not proof.</p>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>
